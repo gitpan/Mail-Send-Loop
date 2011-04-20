@@ -29,7 +29,7 @@ our @EXPORT = qw(
 	
 );
 
-our $VERSION = '0.1';
+our $VERSION = '0.2';
 
 
 # -----
@@ -93,6 +93,32 @@ sub emailMode(){
 		$self->{mail_mode} = $mode;
 	}
 	return $self->{mail_mode};
+}
+
+sub sendMail_EML(){
+    my $self = shift;
+	my $emlf = shift;
+	my $mailSender = shift;
+	my $recepient  = shift;
+
+	if( ! -e $emlf ){
+		print "  Error: Cannot find $emlf\n";
+		return 0;
+	}
+
+	open(INPUT, $emlf);
+	my $content = do { local $/; <INPUT> };
+	close INPUT;
+	#$content =~ s/\x0a\./\x0a\.\./sg;			# . at beginning of the line need be 2
+
+	my $mail_socket = &createMailSocket($self->{mail_host}, $self->{mail_port}, $self->{greeting});
+
+	$gCOUNT++;
+	&sendMail_OneTcpSession(\$mail_socket, $mailSender, $recepient, $content);
+	
+	&closeMailSocket(\$mail_socket);
+
+	return 1;
 }
 
 sub sendMail_AllFilesInFolder(){
@@ -442,7 +468,7 @@ Mail::Send::Loop - Perl extension for sending emails that attach each file in a 
 
 	print  $mailer->emailMode() . "\n";
 
-	print "  $ret mails sent\n";
+	$mailer->sendMail_EML('test_emails/mail.eml', $sender[0], $rpient[0]);
 
 	sub getMIME(){
 
@@ -620,6 +646,30 @@ Users set for 'RCPT TO'. It takes an ARRAY reference.
 =item * mail_count
 
 Stop sending email after specified number of emails sent
+
+=back
+
+=head2 sendMail_EML
+	
+	$mailer->sendMail_EML($eml, $mailfrom, $mailto);
+	
+Send one specified EML email file
+
+Options:
+
+=over 4
+
+=item * $eml
+
+EML file's path
+
+=item * $mailfrom
+
+MAIL FROM email address
+
+=item * $mailto
+
+RCPT TO email address
 
 =back
 
