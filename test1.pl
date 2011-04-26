@@ -7,7 +7,7 @@ my @rpient = ('tiger@freedom.net', 'lion@freedom.net');
 my $mail_host = $ARGV[0] || '127.0.0.1';
 my $mail_port = "25";
 	
-my $mailer = Mail::Send::Loop->new(
+my $mailer = new Mail::Send::Loop(
 	mail_host  => '127.0.0.1',
 	mail_port  => 25,
 	mail_mode  => '1tom',
@@ -32,11 +32,11 @@ $mailer->setDebug(1);
 
 $ret = $mailer->sendMail_AllFilesInFolder(
 	mail_folder  => 'test_emails', 
-	mail_mode    => '1tom',
+	mail_mode    => '1to1',
 	mail_subject => "babbaaba",
 	mail_txt_body=> "7777",
 	greetings    => "ccc.com",
-	mail_count   => 2,
+	mail_count   => -1,
 
 );
 print "  $ret mails sent\n";

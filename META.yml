@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Mail-Send-Loop
-version:            0.2
+version:            0.3
 abstract:           Perl extension for sending emails that attach each file in a specified folder and loop a set of users
 author:
     - Jing Kang <kxj@hotmail.com>
